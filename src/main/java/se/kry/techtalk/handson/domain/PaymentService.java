@@ -4,12 +4,20 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
-public interface PaymentService {
+@Service
+public class PaymentService {
 
-  Payment createPayment(Amount amount);
+  public Payment createPayment(Amount amount) {
+    throw new IllegalArgumentException();
+  }
 
-  Optional<Payment> getPayment(UUID id);
+  public Optional<Payment> getPayment(UUID id) {
+    throw new IllegalArgumentException();
+  }
 
-  Page<Payment> getPayments(Pageable pageable);
+  public Page<Payment> getPayments(Pageable pageable) {
+    throw new IllegalArgumentException();
+  }
 }
