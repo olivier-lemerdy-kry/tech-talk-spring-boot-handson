@@ -53,15 +53,14 @@ class PaymentRepositoryTest {
     repository.save(toSave);
 
     assertThatThrownBy(() -> testEntityManager.flush())
-        .isInstanceOfSatisfying(ConstraintViolationException.class, exception -> {
-          assertThat(exception.getConstraintViolations())
-              .hasSize(1)
-              .first()
-              .satisfies(violation -> {
-                assertThat(violation.getPropertyPath()).hasToString("amountCurrency");
-                assertThat(violation.getMessageTemplate()).isEqualTo("{" + NotNull.class.getName() + ".message}");
-              });
-        });
+        .isInstanceOfSatisfying(ConstraintViolationException.class, exception ->
+            assertThat(exception.getConstraintViolations())
+                .hasSize(1)
+                .first()
+                .satisfies(violation -> {
+                  assertThat(violation.getPropertyPath()).hasToString("amountCurrency");
+                  assertThat(violation.getMessageTemplate()).isEqualTo("{" + NotNull.class.getName() + ".message}");
+                }));
   }
 
 }
