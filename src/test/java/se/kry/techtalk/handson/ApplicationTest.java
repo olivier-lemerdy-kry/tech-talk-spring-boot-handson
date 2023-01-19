@@ -1,6 +1,5 @@
 package se.kry.techtalk.handson;
 
-import static java.util.Objects.requireNonNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -12,7 +11,6 @@ import java.io.InputStream;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,7 +41,7 @@ class ApplicationTest {
     scenario_step2_GET_payments(id);
   }
 
-  private UUID scenario_step1_POST_payments() throws Exception {
+  private String scenario_step1_POST_payments() throws Exception {
     String payload = """
         {
           "value": 10,
@@ -62,12 +60,12 @@ class ApplicationTest {
         .andExpect(jsonPath("$.amount.currency").value("EUR"))
         .andReturn();
 
-    try (InputStream stream = new ByteArrayInputStream(requireNonNull(result.getResponse().getContentAsByteArray()))) {
-      return UUID.fromString(JsonPath.read(stream, "$.id"));
+    try (InputStream stream = new ByteArrayInputStream(result.getResponse().getContentAsByteArray())) {
+      return JsonPath.read(stream, "$.id");
     }
   }
 
-  private void scenario_step2_GET_payments(UUID id) throws Exception {
+  private void scenario_step2_GET_payments(String id) throws Exception {
     mockMvc.perform(get("/api/v1/payments/{id}", id))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(id))

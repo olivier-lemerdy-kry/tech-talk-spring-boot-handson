@@ -26,19 +26,25 @@ public class PaymentService {
         .amountCurrency(amount.currency())
         .build();
     var saved = repository.save(toSave);
+    return paymentToInfo(saved);
+  }
+
+  public Optional<PaymentInfo> getPayment(@NotNull UUID id) {
+    return repository.findById(id)
+        .map(PaymentService::paymentToInfo);
+  }
+
+  public Page<PaymentInfo> getPayments(@NotNull Pageable pageable) {
+    return repository.findAll(pageable)
+        .map(PaymentService::paymentToInfo);
+  }
+
+  private static PaymentInfo paymentToInfo(Payment saved) {
     return new PaymentInfo(
         saved.getId(),
         saved.getTimestamp(),
         new Amount(
             saved.getAmountValue(),
             saved.getAmountCurrency()));
-  }
-
-  public Optional<PaymentInfo> getPayment(@NotNull UUID id) {
-    throw new IllegalArgumentException();
-  }
-
-  public Page<PaymentInfo> getPayments(@NotNull Pageable pageable) {
-    throw new IllegalArgumentException();
   }
 }
