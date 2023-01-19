@@ -9,23 +9,23 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 @JsonTest
-class PaymentJsonTest {
+class PaymentInfoJsonTest {
 
   @Autowired
-  private JacksonTester<Payment> tester;
+  private JacksonTester<PaymentInfo> tester;
 
   @Test
   void serialize() throws IOException {
-    var jsonContent = tester.write(PaymentFixtures.PAYMENT);
+    var jsonContent = tester.write(PaymentFixtures.PAYMENT_INFO);
 
-    assertThat(jsonContent).isEqualToJson("Payment.json");
+    assertThat(jsonContent).isEqualToJson("PaymentInfo.json");
   }
 
   @Test
   void deserialize() throws IOException {
-    var payment = tester.readObject("Payment.json");
+    var payment = tester.readObject("PaymentInfo.json");
 
-    assertThat(payment).isEqualTo(PaymentFixtures.PAYMENT);
+    assertThat(payment).isEqualTo(PaymentFixtures.PAYMENT_INFO);
   }
 
 }

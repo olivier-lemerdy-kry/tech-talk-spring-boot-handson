@@ -33,7 +33,7 @@ class PaymentsControllerTest {
   @Test
   void POST_payments_OK() throws Exception {
     when(service.createPayment(AmountFixtures.AMOUNT))
-        .thenReturn(PaymentFixtures.PAYMENT);
+        .thenReturn(PaymentFixtures.PAYMENT_INFO);
 
     String payload = """
         {
@@ -98,7 +98,7 @@ class PaymentsControllerTest {
   @Test
   void GET_payments_OK() throws Exception {
     when(service.getPayments(Pageable.ofSize(20)))
-        .thenReturn(new PageImpl<>(List.of(PaymentFixtures.PAYMENT)));
+        .thenReturn(new PageImpl<>(List.of(PaymentFixtures.PAYMENT_INFO)));
 
     mockMvc.perform(get("/api/v1/payments"))
         .andExpect(status().isOk())
@@ -109,7 +109,7 @@ class PaymentsControllerTest {
   @Test
   void GET_payment_ID_OK() throws Exception {
     when(service.getPayment(PaymentFixtures.ID))
-        .thenReturn(Optional.of(PaymentFixtures.PAYMENT));
+        .thenReturn(Optional.of(PaymentFixtures.PAYMENT_INFO));
 
     mockMvc.perform(get("/api/v1/payments/{id}", PaymentFixtures.ID_STRING))
         .andExpect(status().isOk())

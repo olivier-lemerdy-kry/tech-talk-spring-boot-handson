@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import se.kry.techtalk.handson.domain.Amount;
-import se.kry.techtalk.handson.domain.Payment;
+import se.kry.techtalk.handson.domain.PaymentInfo;
 import se.kry.techtalk.handson.domain.PaymentService;
 
 @RestController
@@ -27,19 +27,19 @@ public class PaymentsController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  Payment createPayment(@RequestBody @Valid Amount amount) {
+  PaymentInfo createPayment(@RequestBody @Valid Amount amount) {
     return service.createPayment(amount);
   }
 
   @GetMapping("{id}")
-  ResponseEntity<Payment> getPayment(@PathVariable UUID id) {
+  ResponseEntity<PaymentInfo> getPayment(@PathVariable UUID id) {
     return service.getPayment(id)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @GetMapping
-  Page<Payment> getPayments(Pageable pageable) {
+  Page<PaymentInfo> getPayments(Pageable pageable) {
     return service.getPayments(pageable);
   }
 }

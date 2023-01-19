@@ -13,5 +13,5 @@ public interface PaymentFixtures {
 
   Amount AMOUNT = AmountFixtures.AMOUNT;
 
-  Payment PAYMENT = new Payment(ID, TIMESTAMP, AMOUNT);
+  PaymentInfo PAYMENT_INFO = new PaymentInfo(ID, TIMESTAMP, AMOUNT);
 }
