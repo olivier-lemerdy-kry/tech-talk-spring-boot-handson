@@ -25,7 +25,7 @@ class PaymentRepositoryTest {
 
   @Test
   void save_OK() {
-    var toSave = new Payment.PaymentBuilder()
+    var toSave = Payment.builder()
         .timestamp(PaymentFixtures.TIMESTAMP)
         .amountValue(AmountFixtures.VALUE)
         .amountCurrency(AmountFixtures.CURRENCY)
@@ -45,7 +45,7 @@ class PaymentRepositoryTest {
 
   @Test
   void save_no_currency_KO() {
-    var toSave = new Payment.PaymentBuilder()
+    var toSave = Payment.builder()
         .timestamp(PaymentFixtures.TIMESTAMP)
         .amountValue(AmountFixtures.VALUE)
         .build();
