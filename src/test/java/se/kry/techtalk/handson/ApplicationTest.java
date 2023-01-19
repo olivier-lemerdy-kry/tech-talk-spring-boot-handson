@@ -9,11 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.jayway.jsonpath.JsonPath;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -68,6 +74,17 @@ class ApplicationTest {
         .andExpect(jsonPath("$.timestamp").value("1970-01-01T00:00:00Z"))
         .andExpect(jsonPath("$.amount.value").value(10))
         .andExpect(jsonPath("$.amount.currency").value("EUR"));
+  }
+
+  @TestConfiguration
+  static class ApplicationTestConfiguration {
+
+    @Bean
+    @Primary
+    Clock fixedClock() {
+      return Clock.fixed(Instant.EPOCH, ZoneId.systemDefault());
+    }
+
   }
 
 }
