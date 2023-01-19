@@ -3,7 +3,6 @@ package se.kry.techtalk.handson.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Currency;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,7 @@ class AmountJsonTest {
 
   @Test
   void serialize() throws IOException {
-    var amount = new Amount(BigDecimal.TEN, EUR);
-
-    var jsonContent = tester.write(amount);
+    var jsonContent = tester.write(AmountFixtures.AMOUNT);
 
     assertThat(jsonContent).isEqualToJson("Amount.json");
   }
@@ -31,8 +28,7 @@ class AmountJsonTest {
   void deserialize() throws IOException {
     var amount = tester.readObject("Amount.json");
 
-    assertThat(amount.value()).isEqualTo(BigDecimal.TEN);
-    assertThat(amount.currency()).isEqualTo(EUR);
+    assertThat(amount).isEqualTo(AmountFixtures.AMOUNT);
   }
 
 }

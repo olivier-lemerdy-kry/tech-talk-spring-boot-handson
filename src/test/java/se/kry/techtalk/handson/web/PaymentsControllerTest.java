@@ -6,28 +6,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Currency;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import se.kry.techtalk.handson.domain.Amount;
-import se.kry.techtalk.handson.domain.Payment;
+import se.kry.techtalk.handson.domain.AmountFixtures;
+import se.kry.techtalk.handson.domain.PaymentFixtures;
 import se.kry.techtalk.handson.domain.PaymentService;
 
 @WebMvcTest
 class PaymentsControllerTest {
-
-  private static final UUID PAYMENT_ID = UUID.fromString("4e1c772a-24b8-4444-92cb-842d7c5f1a18");
-  private static final Currency EUR = Currency.getInstance("EUR");
 
   @Autowired
   private MockMvc mockMvc;
@@ -37,9 +32,8 @@ class PaymentsControllerTest {
 
   @Test
   void POST_payments_OK() throws Exception {
-    var amount = new Amount(BigDecimal.TEN, EUR);
-    var payment = new Payment(PAYMENT_ID, Instant.EPOCH, amount);
-    when(service.createPayment(amount)).thenReturn(payment);
+    when(service.createPayment(AmountFixtures.AMOUNT))
+        .thenReturn(PaymentFixtures.PAYMENT);
 
     String payload = """
         {
@@ -53,7 +47,7 @@ class PaymentsControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(payload))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id").value(PAYMENT_ID.toString()))
+        .andExpect(jsonPath("$.id").value(PaymentFixtures.ID_STRING))
         .andExpect(jsonPath("$.timestamp").value("1970-01-01T00:00:00Z"))
         .andExpect(jsonPath("$.amount.value").value(10))
         .andExpect(jsonPath("$.amount.currency").value("EUR"));
@@ -102,14 +96,24 @@ class PaymentsControllerTest {
   }
 
   @Test
-  void GET_payment_ID_OK() throws Exception {
-    var payment = new Payment(PAYMENT_ID, Instant.EPOCH, new Amount(BigDecimal.TEN, EUR));
-    when(service.getPayment(PAYMENT_ID))
-        .thenReturn(Optional.of(payment));
+  void GET_payments_OK() throws Exception {
+    when(service.getPayments(Pageable.ofSize(20)))
+        .thenReturn(new PageImpl<>(List.of(PaymentFixtures.PAYMENT)));
 
-    mockMvc.perform(get("/api/v1/payments/{id}", PAYMENT_ID))
+    mockMvc.perform(get("/api/v1/payments"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").value(PAYMENT_ID.toString()))
+        .andExpect(jsonPath("$.totalElements").value(1))
+        .andExpect(jsonPath("$.totalPages").value(1));
+  }
+
+  @Test
+  void GET_payment_ID_OK() throws Exception {
+    when(service.getPayment(PaymentFixtures.ID))
+        .thenReturn(Optional.of(PaymentFixtures.PAYMENT));
+
+    mockMvc.perform(get("/api/v1/payments/{id}", PaymentFixtures.ID_STRING))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(PaymentFixtures.ID_STRING))
         .andExpect(jsonPath("$.timestamp").value("1970-01-01T00:00:00Z"))
         .andExpect(jsonPath("$.amount.value").value(10))
         .andExpect(jsonPath("$.amount.currency").value("EUR"));
@@ -120,7 +124,7 @@ class PaymentsControllerTest {
     when(service.getPayments(Pageable.ofSize(20)))
         .thenReturn(Page.empty());
 
-    mockMvc.perform(get("/api/v1/payments/{id}", PAYMENT_ID))
+    mockMvc.perform(get("/api/v1/payments/{id}", PaymentFixtures.ID))
         .andExpect(status().isNotFound());
   }
 
