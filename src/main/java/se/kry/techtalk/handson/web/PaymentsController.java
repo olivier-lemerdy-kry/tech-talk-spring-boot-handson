@@ -33,9 +33,7 @@ public class PaymentsController {
 
   @GetMapping("{id}")
   ResponseEntity<PaymentInfo> getPayment(@PathVariable UUID id) {
-    return service.getPayment(id)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    return ResponseEntity.of(service.getPayment(id));
   }
 
   @GetMapping
